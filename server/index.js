@@ -1,15 +1,15 @@
 const express = require('express')
 const app = express()
+require('dotenv').config()
 
-app.get('/',(req,res)=>{
+app.get('/', (req, res) => {
     return res.json({
-        message:'Hi there'
+        message: 'Hi there',
     })
 })
 // use port 3000 unless there exists a pre-configured port
-var port = process.env.APP_PORT || 3000;
+var port = process.env.APP_PORT || 3000
 
-
-app.listen(port, ()=>{
+app.listen(port, () => {
     console.log(`Server running on port ${port}`)
 })
