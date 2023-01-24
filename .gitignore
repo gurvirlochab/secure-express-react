@@ -1,0 +1,9 @@
+**/.idea
+**/node_modules
+.env
+**/.env
+**/logs
+**/dist
+
+
+npm-debug.log
