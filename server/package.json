@@ -11,7 +11,9 @@
     "author": "Gurvir Lochab",
     "license": "ISC",
     "dependencies": {
+        "@prisma/client": "^4.9.0",
         "dotenv": "^16.0.3",
-        "express": "^4.18.2"
+        "express": "^4.18.2",
+        "prisma": "^4.9.0"
     }
 }
