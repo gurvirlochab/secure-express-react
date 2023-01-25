@@ -1,10 +1,14 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
 const prisma = require('./prisma/prisma')
 
 // const prisma = new PrismaClient()
 
 require('dotenv').config()
+
+// Use cors to configure CORS settings
+app.use(cors())
 
 app.use(express.json())
 
