@@ -39,13 +39,16 @@ const limiter = rateLimit({
 })
 app.use(limiter)
 
-
 // Use bcrypt to hash user passwords
 const saltRounds = 10
 const plainPassword = 'password123'
-bcrypt.hash(plainPassword, saltRounds, (err, hash) => {
-    // Store the hashed password in the database
-})
+
+var hashPassword = async function () {
+    // console.log(bcrypt.hash(plainPassword, saltRounds))
+    await bcrypt.hash(plainPassword, saltRounds)
+    // console.log(hashPwd)
+}
+hashPassword()
 
 // Use jsonwebtoken to handle JWT generation and verification
 const secret = 'secretkey'
@@ -61,11 +64,10 @@ jwt.verify(token, secret, (err, decoded) => {
     //Use the decoded data
 })
 
-
 app.get('/', (req, res) => {
     return res.json({
         message: 'Hi there',
-        token
+        token,
     })
 })
 
