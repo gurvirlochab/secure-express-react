@@ -5,6 +5,8 @@ const helmet = require('helmet')
 const helmetCSP = require('helmet-csp')
 const rateLimit = require('express-rate-limit')
 const prisma = require('./prisma/prisma')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 // const prisma = new PrismaClient()
 
@@ -38,9 +40,32 @@ const limiter = rateLimit({
 app.use(limiter)
 
 
+// Use bcrypt to hash user passwords
+const saltRounds = 10
+const plainPassword = 'password123'
+bcrypt.hash(plainPassword, saltRounds, (err, hash) => {
+    // Store the hashed password in the database
+})
+
+// Use jsonwebtoken to handle JWT generation and verification
+const secret = 'secretkey'
+const payload = { userId: 1 }
+const options = { expiresIn: '1h' }
+const token = jwt.sign(payload, secret, options)
+
+// Verify a token
+jwt.verify(token, secret, (err, decoded) => {
+    if (err) {
+        // Handle error
+    }
+    //Use the decoded data
+})
+
+
 app.get('/', (req, res) => {
     return res.json({
         message: 'Hi there',
+        token
     })
 })
 
