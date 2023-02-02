@@ -16,7 +16,21 @@ require('dotenv').config()
 app.use(helmet())
 
 // Use cors to configure CORS settings
-app.use(cors())
+const whitelist = [
+    'https://example.com',
+    'https://example.org',
+]
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin || whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials: true,
+}
+app.use(cors(corsOptions))
 
 // Use helmet-csp to set the Content-Security-Policy header
 app.use(
