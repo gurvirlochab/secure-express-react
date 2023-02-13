@@ -61,11 +61,6 @@ app.use(
 To improve performance, most browsers prefetch DNS records for the links in a page. In that way the destination ip is already known when the user clicks on a link. This may lead to over-use of the DNS service (if you own a big website, visited by millions people…), privacy issues (one eavesdropper could infer that you are on a certain page), or page statistics alteration (some links may appear visited even if they are not). If you have high security needs you can disable DNS prefetching, at the cost of a performance penalty.
 */
 app.use(helmet.dnsPrefetchControl())
-
-/*
-If you are releasing an update for your website, and you want the users to always download the newer version, you can (try to) disable caching on client’s browser. It can be useful in development too. Caching has performance benefits, which you will lose, so only use this option when there is a real need.
-*/
-app.use(helmet.noCache())
 /*
 By setting and configuring a Content Security Policy you can prevent the injection of anything unintended into your page. This will protect your app from XSS vulnerabilities, undesired tracking, malicious frames, and much more. CSP works by defining a whitelist of content sources which are trusted. You can configure them for each kind of resource a web page may need (scripts, stylesheets, fonts, frames, media, and so on…). There are multiple directives available, so a website owner can have a granular control. See HTML 5 Rocks, KeyCDN for more details. Unfortunately CSP is unsupported by older browser.
 By default, directives are wide open, so it’s important to set the defaultSrc directive as a fallback. Helmet supports both defaultSrc and default-src naming styles. The fallback applies for most of the unspecified directives.
@@ -93,15 +88,15 @@ app.use(
         contentSecurityPolicy: {
             // enable and configure
             directives: {
-                defaultSrc: ['self'],
-                styleSrc: ['style.com'],
+                defaultSrc: ["'self'"],
+                styleSrc: ["'self'", 'trusted-styles.com'],
             },
         },
         dnsPrefetchControl: false, // disable
     })
 )
 
-//each middleware is intorduced separately for information purposes. Using the ‘parent’ helmet() middleware is easy to implement in a real project.
+//each middleware is introduced separately for information purposes. Using the ‘parent’ helmet() middleware is easy to implement in a real project.
 
 // Use cors to configure CORS settings
 const whitelist = ['https://example.com', 'https://example.org']
@@ -117,6 +112,7 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 
+// used to parse the incoming requests with JSON payloads and is based upon the bodyparser
 app.use(express.json())
 
 // Use rate limiting to prevent DoS attacks
