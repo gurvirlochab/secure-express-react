@@ -7,6 +7,12 @@ const prisma = require('./prisma/prisma')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
+// used to parse the incoming requests with JSON payloads and is based upon the bodyparser
+app.use(express.json())
+const bodyParser = require('body-parser')
+
+app.use(bodyParser.json())
+
 // const prisma = new PrismaClient()
 
 require('dotenv').config()
@@ -99,7 +105,11 @@ app.use(
 //each middleware is introduced separately for information purposes. Using the ‘parent’ helmet() middleware is easy to implement in a real project.
 
 // Use cors to configure CORS settings
-const whitelist = ['https://example.com', 'https://example.org']
+const whitelist = [
+    'https://example.com',
+    'https://example.org',
+    'http://127.0.0.1:5173',
+]
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || whitelist.indexOf(origin) !== -1) {
@@ -111,9 +121,6 @@ const corsOptions = {
     credentials: true,
 }
 app.use(cors(corsOptions))
-
-// used to parse the incoming requests with JSON payloads and is based upon the bodyparser
-app.use(express.json())
 
 // Use rate limiting to prevent DoS attacks
 const limiter = rateLimit({
@@ -147,6 +154,7 @@ jwt.verify(token, secret, (err, decoded) => {
     //Use the decoded data
 })
 
+//Push a test jwt token on `http://localhost:3000/`
 app.get('/', (req, res) => {
     return res.json({
         message: 'Hi there',
@@ -154,30 +162,16 @@ app.get('/', (req, res) => {
     })
 })
 
+//Test a post request on the http://localhost:3000/users    endpoint
 app.post('/users', async (req, res) => {
     try {
-        const { name, games } = req.body
-
-        // games is an array of string | string[]
-
+        const { name, email } = req.body.inputs // provided by the request body
         const newUser = await prisma.user.create({
             data: {
-                name, // name is provided by the request body
-                games: {
-                    // create or connect means if the game existed, we will use the old one
-                    // if not, we will create a new game
-                    connectOrCreate: games.map((game) => ({
-                        where: {
-                            name: game,
-                        },
-                        create: {
-                            name: game,
-                        },
-                    })),
-                },
+                name,
+                email,
             },
         })
-
         res.json(newUser)
     } catch (error) {
         console.log(error.message)
@@ -186,10 +180,11 @@ app.post('/users', async (req, res) => {
         })
     }
 })
+
+//Test a GET request on the http://localhost:3000/users endpoint
 app.get('/users', async (req, res) => {
     try {
         const users = await prisma.user.findMany()
-
         res.json(users)
     } catch (error) {
         res.status(500).json({

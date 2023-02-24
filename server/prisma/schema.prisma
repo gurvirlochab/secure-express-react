@@ -1,26 +1,14 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-model Game{
-  id String   @id @default(uuid())
-  name String @unique
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-
-  users User[]
-}
-model User{
-  id String @id @default(uuid())
-  name String @unique
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-  games Game[]  
+model User {
+  id           Int              @id @default(autoincrement())
+  name         String?
+  email        String           
 }
